@@ -36,18 +36,17 @@ def scrape_next_page_link(html_content):
 # Requisito 4
 def scrape_news(html_content):
     selector = Selector(text=html_content)
-    url = selector.css("link[rel='canonical']::attr(href)").get().strip('\n')
-    title = selector.css("h1.entry-title::text").get().strip('\n')
-    timestamp = selector.css("li.meta-date::text").get().strip('\n')
-    writer = selector.css("a.url.fn.n::text").get().strip('\n')
-    raw_rt = selector.css("li.meta-reading-time::text").get().strip('\n')
+    url = selector.css("link[rel='canonical']::attr(href)").get().strip()
+    title = selector.css("h1.entry-title::text").get().strip()
+    timestamp = selector.css("li.meta-date::text").get().strip()
+    writer = selector.css("a.url.fn.n::text").get().strip()
+    raw_rt = selector.css("li.meta-reading-time::text").get().strip()
     reading_time = int(re.findall(r'\d+', raw_rt)[0])
-    summary = (
-        selector.css(".entry-content > p:nth-child(1)::text")
-        .get()
-        .strip('\n')
-    )
-    category = selector.css("span.label::text").get().strip('\n')
+    summary = "".join(
+        selector.css(".entry-content > p:nth-of-type(1) *::text")
+        .getall()
+    ).strip()
+    category = selector.css("span.label::text").get().strip()
 
     return {
         "url": url,
