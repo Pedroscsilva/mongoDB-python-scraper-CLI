@@ -1,7 +1,7 @@
 import sys
-from tech_news.scraper import get_tech_news
+from tech_news import scraper
 from tech_news.analyzer import search_engine
-from tech_news.analyzer.ratings import top_5_categories
+from tech_news.analyzer import ratings
 
 
 def analyzer_menu():
@@ -16,49 +16,58 @@ def analyzer_menu():
     user_option = input(main_menu)
 
     options = {
-        0: get_tech_news_menu,
-        1: search_by_title_menu,
-        2: search_by_date_menu,
-        3: search_by_category_menu,
-        4: top_5_categories_menu,
+        0: get_tech_news,
+        1: search_by_title,
+        2: search_by_date,
+        3: search_by_category,
+        4: top_5_categories,
         5: exit_menu,
+    }
+
+    input_options = {
+        0: "Digite quantas notícias serão buscadas:",
+        1: "Digite o título:",
+        2: "Digite a data no formato aaaa-mm-dd:",
+        3: "Digite a categoria:",
+        4: None,
+        5: None,
     }
 
     try:
         handler = options.get(int(user_option))
-        handler()
-    except ValueError:
-        sys.stderr.write("Opção inválida")
+        if input_options.get(int(user_option)):
+            input_text = input_options.get(int(user_option))
+            user_input = input(input_text)
+            handler(user_input)
+        else:
+            handler()
+    except (ValueError, TypeError):
+        sys.stderr.write("Opção inválida\n")
 
 
-def get_tech_news_menu():
-    amount = int(input("Digite quantas notícias serão buscadas:"))
-    result = get_tech_news(amount)
-    sys.stdout.write(result)
+def get_tech_news(input):
+    scraper.get_tech_news(int(input))
 
 
-def search_by_title_menu():
-    title = input("Digite o título:")
-    result = search_engine.search_by_title(title)
-    sys.stdout.write(result)
+def search_by_title(input):
+    result = search_engine.search_by_title(input)
+    print(result)
 
 
-def search_by_date_menu():
-    date = input("Digite a data no formato aaaa-mm-dd:")
-    result = search_engine.search_by_date(date)
-    sys.stdout.write(result)
+def search_by_date(input):
+    result = search_engine.search_by_date(input)
+    print(result)
 
 
-def search_by_category_menu():
-    category = input("Digite a categoria:")
-    result = search_engine.search_by_category(category)
-    sys.stdout.write(result)
+def search_by_category(input):
+    result = search_engine.search_by_category(input)
+    print(result)
 
 
-def top_5_categories_menu():
-    result = top_5_categories()
-    sys.stdout.write(result)
+def top_5_categories():
+    result = ratings.top_5_categories()
+    print(result)
 
 
 def exit_menu():
-    sys.stdout.write("Encerrando script")
+    print("Encerrando script\n")
